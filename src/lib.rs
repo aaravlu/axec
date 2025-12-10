@@ -8,7 +8,7 @@ use crossterm::style::Color::*;
 use llm::LLMModel;
 use rustyline::error::ReadlineError;
 use termimad::rgb;
-use termimad::{CompoundStyle, MadSkin, Alignment};
+use termimad::{Alignment, CompoundStyle, MadSkin};
 
 use crate::llm::{Message, build_and_send_request, parse_response};
 
@@ -90,13 +90,13 @@ pub fn run() -> anyhow::Result<String> {
             },
             Err(ReadlineError::Eof) => {
                 let exit_text = r#"
-                   ██╗  ██╗████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗     
-                   ╚██╗██╔╝╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║     
-                    ╚███╔╝    ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║     
-                    ██╔██╗    ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║     
-                   ██╔╝ ██╗   ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗
-                   ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
-                   "#;
+██╗  ██╗████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗
+╚██╗██╔╝╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║
+╚███╔╝    ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║
+██╔██╗    ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║
+██╔╝ ██╗   ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗
+╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
+"#;
                 print_xterminal_gradient(exit_text);
                 process::exit(0)
             }
@@ -145,7 +145,7 @@ fn print_xterminal_gradient(art: &str) {
 
     for (i, line) in lines.enumerate() {
         let ratio = i as f32 / total_lines as f32;
-        
+
         // 红(255,0,0)→黄(255,255,0)→粉(255,105,180)
         let (r, g, b) = if ratio < 0.5 {
             // 红到黄阶段 (ratio 0.0-0.5)
@@ -154,7 +154,11 @@ fn print_xterminal_gradient(art: &str) {
         } else {
             // 黄到粉阶段 (ratio 0.5-1.0)
             let sub_ratio = (ratio - 0.5) * 2.0;
-            (255, (255.0 * (1.0 - sub_ratio * 0.59)) as u8, (111.0 * sub_ratio) as u8)
+            (
+                255,
+                (255.0 * (1.0 - sub_ratio * 0.59)) as u8,
+                (111.0 * sub_ratio) as u8,
+            )
         };
 
         println!("{}", line.truecolor(r, g, b));
